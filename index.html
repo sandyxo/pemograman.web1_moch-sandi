@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kasir Cafe</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+
+        .container{
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 400px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h2{
+            text-align: center;
+            color: darkblue;
+        }
+
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        button{
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: darkblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: blue;
+        }
+
+        .hasil{
+            margin-top: 20px;
+            background: #e8f0ff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Sistem Kasir Cafe</h2>
+
+    <input type="text" id="nama" placeholder="Masukkan Nama">
+
+    <input type="number" id="kopi" placeholder="Jumlah Kopi">
+
+    <input type="number" id="roti" placeholder="Jumlah Roti">
+
+    <button onclick="hitungTotal()">Hitung Total</button>
+
+    <div class="hasil" id="output"></div>
+
+</div>
+
+<script>
+
+function hitungTotal(){
+
+    // Harga produk
+    let hargaKopi = 15000;
+    let hargaRoti = 10000;
+
+    // Ambil input
+    let nama = document.getElementById("nama").value;
+    let jumlahKopi = parseInt(document.getElementById("kopi").value);
+    let jumlahRoti = parseInt(document.getElementById("roti").value);
+
+    // Hitung subtotal
+    let subtotalKopi = jumlahKopi * hargaKopi;
+    let subtotalRoti = jumlahRoti * hargaRoti;
+
+    // Total awal
+    let total = subtotalKopi + subtotalRoti;
+
+    // Pajak 10%
+    let pajak = total * 0.10;
+
+    // Total setelah pajak
+    let totalSetelahPajak = total + pajak;
+
+    // Variabel diskon
+    let diskon = 0;
+
+    // Operator kondisi
+    if(totalSetelahPajak >= 100000){
+        diskon = totalSetelahPajak * 0.15;
+    }
+    else if(totalSetelahPajak >= 50000){
+        diskon = totalSetelahPajak * 0.10;
+    }
+    else{
+        diskon = 0;
+    }
+
+    // Total akhir
+    let totalBayar = totalSetelahPajak - diskon;
+
+    // Status pembayaran
+    let status = "";
+
+    if(totalBayar > 0){
+        status = "Pembayaran Berhasil";
+    }
+    else{
+        status = "Pembayaran Gagal";
+    }
+
+    // Tampilkan hasil
+    document.getElementById("output").innerHTML = `
+        <h3>Struk Pembayaran</h3>
+
+        <p><b>Nama:</b> ${nama}</p>
+
+        <p><b>Jumlah Kopi:</b> ${jumlahKopi}</p>
+
+        <p><b>Jumlah Roti:</b> ${jumlahRoti}</p>
+
+        <p><b>Subtotal Kopi:</b> Rp ${subtotalKopi}</p>
+
+        <p><b>Subtotal Roti:</b> Rp ${subtotalRoti}</p>
+
+        <p><b>Total:</b> Rp ${total}</p>
+
+        <p><b>Pajak 10%:</b> Rp ${pajak}</p>
+
+        <p><b>Diskon:</b> Rp ${diskon}</p>
+
+        <hr>
+
+        <p><b>Total Bayar:</b> Rp ${totalBayar}</p>
+
+        <p><b>Status:</b> ${status}</p>
+    `;
+}
+
+</script>
+
+</body>
+</html>
