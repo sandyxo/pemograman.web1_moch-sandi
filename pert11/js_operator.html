@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar JavaScript: Operator</title>
+</head>
+<body>
+
+    <h1>Eksperimen Operator JavaScript</h1>
+    <p>Hasil kalkulasi otomatis dicetak ke tab Console browser kamu.</p>
+
+    <script>
+        console.log("=== 1. OPERATOR ARITMATIKA ===");
+        let x = 10;
+        let y = 3;
+
+        console.log("Penjumlahan (x + y) =", x + y);
+        console.log("Pengurangan (x - y) =", x - y);
+        console.log("Perkalian (x * y)   =", x * y);
+        console.log("Pembagian (x / y)   =", x / y);
+        console.log("Sisa Bagi / Modulo (x % y) =", x % y);
+        console.log("Perpangkatan (x ** y) =", x ** y);
+
+
+        console.log("\n=== 2. OPERATOR PENUGASAN (ASSIGNMENT) ===");
+        let n = 5;
+        console.log("Nilai awal n =", n);
+        
+        n += 5; // Sama dengan: n = n + 5
+        console.log("Hasil n += 5 ->", n);
+        
+        n *= 2; // Sama dengan: n = n * 2
+        console.log("Hasil n *= 2 ->", n);
+
+
+        console.log("\n=== 3. OPERATOR PEMBANDING ===");
+        let angka1 = 10;
+        let angka2 = "10"; // String angka
+
+        console.log("Apakah angka1 == angka2? (Cek nilai saja):", angka1 == angka2); // true
+        console.log("Apakah angka1 === angka2? (Cek nilai & tipe data):", angka1 === angka2); // false
+        
+        console.log("Apakah angka1 != 5?:", angka1 != 5); // true
+        console.log("Apakah angka1 > 20?:", angka1 > 20); // false
+        console.log("Apakah angka1 <= 10?:", angka1 <= 10); // true
+    </script>
+
+</body>
+</html>

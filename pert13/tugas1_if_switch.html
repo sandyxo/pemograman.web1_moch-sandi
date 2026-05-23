@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas 1: If Else & Switch Kompleks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f7f6; }
+        .container { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 500px; }
+        h3 { margin-top: 0; color: #333; }
+        .result-box { margin-top: 15px; padding: 15px; background: #eef2f3; border-left: 5px solid #007bff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Sistem Kasir Pembayaran</h3>
+    <p>Buka <strong>Console</strong> browser atau lihat hasil di bawah ini:</p>
+    <div class="result-box" id="outputKasir"></div>
+</div>
+
+<script>
+    // Data Pembelian
+    let totalBelanja = 500000; 
+    let tipeMember = "Gold"; // Opsi: VIP, Gold, Silver, Non-Member
+    let metodeBayar = "QRIS"; // Opsi: QRIS, Kartu_Kredit, Tunai
+    let diskon = 0;
+
+    // 1. Kompleks If-Else (Menentukan diskon berdasarkan Member & Total Belanja)
+    if (tipeMember === "VIP") {
+        if (totalBelanja >= 30000) {
+            diskon = 0.20; // 20%
+        } else {
+            diskon = 0.15;
+        }
+    } else if (tipeMember === "Gold") {
+        if (totalBelanja >= 200000) {
+            diskon = 0.10; // 10%
+        } else {
+            diskon = 0.05;
+        }
+    } else if (tipeMember === "Silver") {
+        diskon = 0.02; // 2%
+    } else {
+        diskon = 0;
+    }
+
+    let hargaSetelahDiskon = totalBelanja - (totalBelanja * diskon);
+    let biayaAdmin = 0;
+
+    // 2. Switch Case (Menentukan biaya admin berdasarkan metode pembayaran)
+    switch(metodeBayar) {
+        case "QRIS":
+            biayaAdmin = 0;
+            break;
+        case "Kartu_Kredit":
+            biayaAdmin = 5000;
+            break;
+        case "Tunai":
+            biayaAdmin = 0;
+            break;
+        default:
+            biayaAdmin = 2000;
+    }
+
+    let totalAkhir = hargaSetelahDiskon + biayaAdmin;
+
+    // Menampilkan Hasil
+    let infoLog = `
+        Total Awal: Rp ${totalBelanja}<br>
+        Member: ${tipeMember} (Diskon ${diskon * 100}%)<br>
+        Metode Bayar: ${metodeBayar} (Biaya Admin: Rp ${biayaAdmin})<br>
+        -----------------------------------<br>
+        Total yang Harus Dibayar: Rp ${totalAkhir}
+    `;
+    
+    console.log("=== Hasil Perhitungan Kasir ===");
+    console.log(`Total Akhir: Rp ${totalAkhir}`);
+    document.getElementById("outputKasir").innerHTML = infoLog;
+</script>
+
+</body>
+</html>

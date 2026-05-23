@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar JavaScript: Variabel</title>
+</head>
+<body>
+
+    <h1>Mengenal Variabel (var, let, const)</h1>
+    <p>Silakan cek tab Console untuk melihat hasil pemrosesan variabel.</p>
+
+    <script>
+        // 1. var (Gaya lama, bisa dideklarasikan ulang & punya fungsi scope)
+        var nama = "Sandi";
+        var nama = "Alex"; // Tidak error jika dideklarasikan ulang
+        console.log("Menggunakan var:", nama);
+
+        // 2. let (Modern, block scope, nilainya bisa diubah tapi tidak bisa dideklarasikan ulang)
+        let umur = 20;
+        umur = 21; // Mengubah nilai (boleh)
+        // let umur = 25; // Error! Tidak bisa dideklarasikan ulang di scope yang sama
+        console.log("Menggunakan let (umur):", umur);
+
+        // 3. const (Konstanta, nilainya tetap dan TIDAK BISA diubah)
+        const PI = 3.14;
+        // PI = 3.15; // Error! Nilai const tidak bisa ditimpa
+        console.log("Menggunakan const (PI):", PI);
+    </script>
+
+</body>
+</html>

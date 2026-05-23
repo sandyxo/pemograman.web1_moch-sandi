@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tugas 2: Function Kompleks</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f4f7f6; }
+        .card { background: white; padding: 20px; border-radius: 8px; max-width: 450px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .error { color: red; font-weight: bold; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h3>Sistem Validasi & Registrasi</h3>
+    <div id="hasilFungsi"></div>
+</div>
+
+<script>
+    // Data Object Peserta
+    let dataPeserta = {
+        username: "sandi_cyber",
+        email: "sandi@ubox.net",
+        nilaiUjian: 85
+    };
+
+    // Function Kompleks dengan parameter object, validasi, dan return value
+    function prosesRegistrasi(user) {
+        // Validasi input awal (Error Handling)
+        if (!user.username || !user.email) {
+            return "<span class='error'>Error: Data username atau email tidak boleh kosong!</span>";
+        }
+
+        if (user.username.length < 5) {
+            return "<span class='error'>Error: Username minimal harus 5 karakter!</span>";
+        }
+
+        // Logika penentuan status kelulusan
+        let statusUjian = "";
+        if (user.nilaiUjian >= 75) {
+            statusUjian = "<span class='success'>LULUS (Nilai Bagus)</span>";
+        } else {
+            statusUjian = "<span class='error'>GAGAL (Silakan Remedial)</span>";
+        }
+
+        // Return hasil format HTML laporan
+        return `
+            <strong>Status Registrasi Berhasil</strong><br>
+            Nama Akun: @${user.username}<br>
+            Email: ${user.email}<br>
+            Nilai: ${user.nilaiUjian}<br>
+            Status Akademik: ${statusUjian}
+        `;
+    }
+
+    // Memanggil fungsi dan memasukkan hasilnya ke halaman HTML
+    let laporanAkhir = prosesRegistrasi(dataPeserta);
+    document.getElementById("hasilFungsi").innerHTML = laporanAkhir;
+</script>
+
+</body>
+</html>

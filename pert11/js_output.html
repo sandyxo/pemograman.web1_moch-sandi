@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belajar JavaScript: Output</title>
+</head>
+<body>
+
+    <h1>Mengenal JavaScript Output</h1>
+    <div id="demo-inner"></div>
+    <br>
+    <button onclick="panggilAlert()">Klik untuk Alert</button>
+
+    <script>
+        // 1. Menggunakan console.log() -> Muncul di tab console inspect elemen
+        console.log("1. Ini output via Console Log");
+
+        // 2. Menggunakan innerHTML -> Mengubah konten elemen HTML berdasarkan ID
+        document.getElementById("demo-inner").innerHTML = "<strong>2. Ini output via innerHTML</strong> (menulis langsung ke halaman)";
+
+        // 3. Menggunakan document.write() -> Menulis langsung ke dokumen (seperti contoh di kelas)
+        document.write("<p>3. Ini output via document.write()</p>");
+
+        // 4. Menggunakan window.alert() -> Memunculkan pop-up box
+        function panggilAlert() {
+            alert("4. Ini output via Alert Box!");
+        }
+    </script>
+
+</body>
+</html>
