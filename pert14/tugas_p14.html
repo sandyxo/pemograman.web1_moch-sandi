@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Data Mahasiswa</title>
+    <style>
+        /* --- Tampilan Warna & Layout Modern --- */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 30px; 
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        h2, h3 { color: #2c3e50; }
+        
+        /* Container Form */
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin-bottom: 30px;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        .form-group input, .form-group select { 
+            padding: 8px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            border: 1px solid #ccc; 
+            border-radius: 4px;
+        }
+        
+        /* Tombol-Tombol */
+        .btn-container { margin: 20px 0; }
+        button { 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: background 0.2s;
+        }
+        .btn-add { background-color: #2ecc71; color: white; }
+        .btn-add:hover { background-color: #27ae60; }
+        .btn-update { background-color: #3498db; color: white; }
+        .btn-update:hover { background-color: #2980b9; }
+        .btn-update:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        
+        /* Tabel Data */
+        table { width: 100%; border-collapse: collapse; background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        th, td { padding: 12px 15px; text-align: left; }
+        th { background-color: #34495e; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        /* Tombol Aksi di Tabel */
+        .btn-edit { background-color: #f1c40f; color: white; padding: 5px 10px; margin-right: 5px; }
+        .btn-edit:hover { background-color: #d4ac0d; }
+        .btn-delete { background-color: #e74c3c; color: white; padding: 5px 10px; }
+        .btn-delete:hover { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <h2>Data Mahasiswa</h2>
+    
+    <!-- Form Input -->
+    <div class="form-container">
+        <div class="form-group">
+            <label for="nim">NIM</label>
+            <input type="text" id="nim">
+        </div>
+        <div class="form-group">
+            <label for="nama">Nama</label>
+            <input type="text" id="nama">
+        </div>
+        <div class="form-group">
+            <label for="jurusan">Jurusan</label>
+            <select id="jurusan">
+                <option value="">- Pilih Jurusan -</option>
+                <option value="Teknik Informatika">Teknik Informatika</option>
+                <option value="Teknik Elektro">Teknik Elektro</option>
+                <option value="Sistem Informasi">Sistem Informasi</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fakultas">Fakultas</label>
+            <select id="fakultas">
+                <option value="">- Pilih Fakultas -</option>
+                <option value="Ilmu Komputer">Ilmu Komputer</option>
+                <option value="Teknik">Teknik</option>
+            </select>
+        </div>
+
+        <div class="btn-container">
+            <button id="btnTambah" class="btn-add" onclick="tambahMahasiswa()">Tambah Mahasiswa</button>
+            <button id="btnUpdate" class="btn-update" onclick="simpanUpdate()" disabled>Update Data Mahasiswa</button>
+        </div>
+    </div>
+
+    <!-- Tabel Tampilan -->
+    <h3>Daftar Mahasiswa</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>NIM</th>
+                <th>Nama</th>
+                <th>Jurusan</th>
+                <th>Fakultas</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tabelBody">
+            <!-- Data dinamis akan dimasukkan di sini oleh JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // Array Object sebagai database sementara di memory browser
+        let daftarMahasiswa = [
+            { nim: "122", nama: "JOHN DOE", jurusan: "Teknik Informatika", fakultas: "Ilmu Komputer" },
+            { nim: "120", nama: "NAME", jurusan: "Teknik Elektro", fakultas: "Teknik" }
+        ];
+
+        // Variabel penampung indeks saat mengedit data
+        let editIndex = null;
+
+        // Fungsi menampilkan/me-refresh data ke dalam tabel HTML
+        function renderTabel() {
+            let tabel = document.getElementById('tabelBody');
+            tabel.innerHTML = ""; // Bersihkan tabel terlebih dahulu
+
+            for (let i = 0; i < daftarMahasiswa.length; i++) {
+                let mhs = daftarMahasiswa[i];
+                let baris = `
+                    <tr>
+                        <td>${mhs.nim}</td>
+                        <td>${mhs.nama}</td>
+                        <td>${mhs.jurusan}</td>
+                        <td>${mhs.fakultas}</td>
+                        <td>
+                            <button class="btn-edit" onclick="editMahasiswa(${i})">Edit</button>
+                            <button class="btn-delete" onclick="deleteMahasiswa(${i})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                tabel.innerHTML += baris;
+            }
+        }
+
+        // 1. FITUR TAMBAH
+        function tambahMahasiswa() {
+            let nim = document.getElementById('nim').value;
+            let nama = document.getElementById('nama').value;
+            let jurusan = document.getElementById('jurusan').value;
+            let fakultas = document.getElementById('fakultas').value;
+
+            if (nim === "" || nama === "" || jurusan === "" || fakultas === "") {
+                alert("Semua field wajib diisi/dipilih!");
+                return;
+            }
+
+            // Tambah object baru ke array
+            daftarMahasiswa.push({
+                nim: nim,
+                nama: nama.toUpperCase(),
+                jurusan: jurusan,
+                fakultas: fakultas
+            });
+
+            resetForm();
+            renderTabel();
+        }
+
+        // 2. FITUR EDIT (Lempar data tabel kembali ke Input Form)
+        function editMahasiswa(index) {
+            editIndex = index; // Catat indeks data yang sedang di-edit
+            let mhs = daftarMahasiswa[index];
+
+            // Isi nilai form sesuai data yang dipilih
+            document.getElementById('nim').value = mhs.nim;
+            document.getElementById('nama').value = mhs.nama;
+            document.getElementById('jurusan').value = mhs.jurusan;
+            document.getElementById('fakultas').value = mhs.fakultas;
+
+            // Atur tombol (Matikan Tambah, Hidupkan Update)
+            document.getElementById('btnTambah').disabled = true;
+            document.getElementById('btnUpdate').disabled = false;
+        }
+
+        // 3. FITUR UPDATE (Menyimpan perubahan data setelah Edit)
+        function simpanUpdate() {
+            if (editIndex === null) return;
+
+            // Ganti nilai object di array berdasarkan indeksnya
+            daftarMahasiswa[editIndex].nim = document.getElementById('nim').value;
+            daftarMahasiswa[editIndex].nama = document.getElementById('nama').value.toUpperCase();
+            daftarMahasiswa[editIndex].jurusan = document.getElementById('jurusan').value;
+            daftarMahasiswa[editIndex].fakultas = document.getElementById('fakultas').value;
+
+            // Kembalikan status tombol
+            document.getElementById('btnTambah').disabled = false;
+            document.getElementById('btnUpdate').disabled = true;
+
+            editIndex = null;
+            resetForm();
+            renderTabel();
+        }
+
+        // 4. FITUR DELETE
+        function deleteMahasiswa(index) {
+            if (confirm("Apakah kamu yakin ingin menghapus data ini?")) {
+                // Menghapus 1 elemen dari array berdasarkan indeksnya
+                daftarMahasiswa.splice(index, 1);
+                renderTabel();
+            }
+        }
+
+        // Fungsi pembantu untuk mengosongkan form inputan
+        function resetForm() {
+            document.getElementById('nim').value = "";
+            document.getElementById('nama').value = "";
+            document.getElementById('jurusan').value = "";
+            document.getElementById('fakultas').value = "";
+        }
+
+        // Jalankan render pertama kali saat halaman dibuka untuk memuat data awal
+        renderTabel();
+    </script>
+
+</body>
+</html>
