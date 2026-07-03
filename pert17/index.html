@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Ping Pong Sederhana</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+        }
+        canvas {
+            border: 4px solid white;
+            background-color: black;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Game Ping Pong</h1>
+    <p>Gunakan Mouse untuk menggerakkan papan (Paddle)</p>
+    <canvas id="pongCanvas" width="800" height="500"></canvas>
+
+    <script>
+        const canvas = document.getElementById("pongCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Objek Bola
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 10,
+            speed: 5,
+            velocityX: 5,
+            velocityY: 5,
+            color: "WHITE"
+        };
+
+        // Papan Pengguna (User Paddle)
+        const user = {
+            x: 0,
+            y: canvas.height / 2 - 50,
+            width: 10,
+            height: 100,
+            score: 0,
+            color: "WHITE"
+        };
+
+        // Papan Komputer (AI Paddle)
+        const com = {
+            x: canvas.width - 10,
+            y: canvas.height / 2 - 50,
+            width: 10,
+            height: 100,
+            score: 0,
+            color: "WHITE"
+        };
+
+        // Gambar Kotak (Papan)
+        function drawRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        // Gambar Lingkaran (Bola)
+        function drawCircle(x, y, r, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        // Gambar Teks (Skor)
+        function drawText(text, x, y, color) {
+            ctx.fillStyle = color;
+            ctx.font = "45px sans-serif";
+            ctx.fillText(text, x, y);
+        }
+
+        // Kontrol Mouse Papan User
+        canvas.addEventListener("mousemove", movePaddle);
+        function movePaddle(evt) {
+            let rect = canvas.getBoundingClientRect();
+            user.y = evt.clientY - rect.top - user.height / 2;
+        }
+
+        // Deteksi Tabrakan Bola dengan Papan
+        function collision(b, p) {
+            p.top = p.y;
+            p.bottom = p.y + p.height;
+            p.left = p.x;
+            p.right = p.x + p.width;
+
+            b.top = b.y - b.radius;
+            b.bottom = b.y + b.radius;
+            b.left = b.x - b.radius;
+            b.right = b.x + b.radius;
+
+            return b.character !== undefined ? false : b.right > p.left && b.bottom > p.top && b.left < p.right && b.top < p.bottom;
+        }
+
+        // Reset Bola ketika ada yang mencetak gol
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.speed = 5;
+            ball.velocityX = -ball.velocityX;
+        }
+
+        // Update Logika Game Per Frame
+        function update() {
+            // Jalankan bola
+            ball.x += ball.velocityX;
+            ball.y += ball.velocityY;
+
+            // AI sederhana untuk menggerakkan papan komputer
+            com.y += ((ball.y - (com.y + com.height / 2))) * 0.1;
+
+            // Memantul jika kena dinding atas/bawah
+            if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
+                ball.velocityY = -ball.velocityY;
+            }
+
+            // Cek siapa yang kena bola (User atau Komputer)
+            let player = (ball.x < canvas.width / 2) ? user : com;
+
+            if (collision(ball, player)) {
+                // Tempat bola mengenai papan menentukan arah pantulan
+                let collidePoint = (ball.y - (player.y + player.height / 2));
+                collidePoint = collidePoint / (player.height / 2);
+
+                let angleRad = (Math.PI / 4) * collidePoint;
+                let direction = (ball.x < canvas.width / 2) ? 1 : -1;
+
+                ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+                ball.velocityY = ball.speed * Math.sin(angleRad);
+
+                // Setiap kali terpantul, bola makin cepat
+                ball.speed += 0.5;
+            }
+
+            // Update Skor
+            if (ball.x - ball.radius < 0) {
+                com.score++;
+                resetBall();
+            } else if (ball.x + ball.radius > canvas.width) {
+                user.score++;
+                resetBall();
+            }
+        }
+
+        // Render Komponen Visual ke Canvas
+        function render() {
+            // Bersihkan canvas hitam
+            drawRect(0, 0, canvas.width, canvas.height, "BLACK");
+
+            // Garis Tengah Net
+            for (let i = 0; i <= canvas.height; i += 15) {
+                drawRect(canvas.width / 2 - 1, i, 2, 10, "WHITE");
+            }
+
+            // Tampilkan Skor
+            drawText(user.score, canvas.width / 4, canvas.height / 5, "WHITE");
+            drawText(com.score, 3 * canvas.width / 4, canvas.height / 5, "WHITE");
+
+            // Gambar Papan & Bola
+            drawRect(user.x, user.y, user.width, user.height, user.color);
+            drawRect(com.x, com.y, com.width, com.height, com.color);
+            drawCircle(ball.x, ball.y, ball.radius, ball.color);
+        }
+
+        // Loop Game Utama
+        function game() {
+            update();
+            render();
+        }
+
+        // Jalankan game dengan interval 50 frame per detik (fps)
+        const framePerSecond = 50;
+        setInterval(game, 1000 / framePerSecond);
+    </script>
+</body>
+</html>
